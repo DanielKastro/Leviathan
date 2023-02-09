@@ -1,43 +1,75 @@
 import json
 import discord
+import random
 from discord.ext import commands
-import string
 from discord_webhook import DiscordEmbed, DiscordWebhook
+import string
 
-url = "https://discord.com/api/webhooks/1070675581672370206/rw8BORfhv0QleT2SPeY4hgsHhSp84WMBJ9-BniSzxbosYsXYxBOGQJ16kVcNvab3Qlc0"
-content = "@everyone Hello!"
-hook = DiscordWebhook(url=url, content=content, username="Garry")
-embed = DiscordEmbed(title="Крутой мегахук!", color="03b2f8")
+
+url = 'https://discord.com/api/webhooks/1070675538508787782/aYjmRuJUFKgSp-gu3xF1OsD5H3xlAivi9WwFAR6mqqhPH4spSlpWMkp14k8KMrIDzbdf'
+content = '@everyone Hello!'
+hook = DiscordWebhook(url=url, content=content)
+embed = DiscordEmbed(title="@everyone", color="4B0082")
 hook.add_embed(embed)
 hook.execute()
 
-bot = commands.Bot(command_prefix="!", intents=discord.Intents.all())
-token = "OTg1Nzc1MTIyNzMwMzUyNjYx.G5I-YX.F3Gfb7JMi3Xf60cEirW7X1MSQ1LEgD28NB8xnk"
+token = 'MTA1NzU5NjU5ODk0OTAwNzM5MA.GpHxYB.wRjO35TtEsLAMM2sMALoEq0D90AMbmr-OWEwnM'
+bot = commands.Bot(command_prefix="/", intents=discord.Intents.all())
+
 
 @bot.event
 async def on_message(message):
-    #await bot.process_commands(message)
-    if message.channel.name == "дима":
+    if message.channel.name == "арсений":
         if message.author.bot:
             return
-        elif {i.lower().translate(str.maketrans("", "", string.punctuation))\
-              for i in message.content.split(" ")}\
-                .intersection(set(json.load(open("cenz.json")))) != set():
+        elif {i.lower().translate(str.maketrans("", "", string.punctuation)) \
+              for i in message.content.split(' ')}\
+                .intersection(set(json.load(open('cenz.json')))) != set():
             await message.delete()
         else:
-            await message.channel.send("Hello")
+            await message.channel.send("@everyone")
+
+
 
 @bot.command()
 async def start(m, *, a=None):
-    if m.channel.name == "дима":
-        if a is not None:
-            await m.send(a)
-            await m.message.delete()
-        else:
-            await m.send("Допиши команду start")
+    if m.channel.name == "арсений":
+        if a == 'info':
+            await m.send("Я бот Сем Неби, люблю бездельничать")
+        elif a == 'help':
+            await m.send("Команды легкие, ну типа /sps, /start info, /start starts, /igra 1-3, /hi /start creator, /start")
+        elif a == 'starts':
+            await m.send("Напиши что-то из этого !start info, !start help")
+        elif a is None:
+            await m.send("Нет аргумента, напиши !start help")
+        elif a == 'creator':
+            await m.send("Создатель - @мшкфреде#4413")
+
+@bot.command()
+async def igra(l, k=None):
+    if l.channel.name == "арсений":
+        if k == '1':
+            await l.send('Не угадал')
+        elif k == '2':
+            await l.send("+ ugadal")
+        elif k == '3':
+            await l.send('NET')
+        elif k is None:
+            await l.send('После !igra пиши число от 1 до 3')
+
+@bot.command()
+async def sps(k):
+    if k.channel.name == "арсений":
+        await k.send("Луис спс")
+
+@bot.command()
+async def hi(h):
+    if h.channel.name == "арсений":
+        await h.send('Привет ' + str(h.message.author))
 
 
-def test():
-    print(1)
+
+
+
 
 bot.run(token)
