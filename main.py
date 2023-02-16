@@ -1,75 +1,27 @@
-import json
 import discord
 import random
-from discord.ext import commands
-from discord_webhook import DiscordEmbed, DiscordWebhook
-import string
+
+ran_num = random.randint(1, 100)
+ran_num = str(ran_num)
 
 
-url = 'https://discord.com/api/webhooks/1070675538508787782/aYjmRuJUFKgSp-gu3xF1OsD5H3xlAivi9WwFAR6mqqhPH4spSlpWMkp14k8KMrIDzbdf'
-content = '@everyone Hello!'
-hook = DiscordWebhook(url=url, content=content)
-embed = DiscordEmbed(title="@everyone", color="4B0082")
-hook.add_embed(embed)
-hook.execute()
+token = "XXXXXXXXXXXXXXXXXXXXXXXXXXтут надо ввести токенXXXXXXXXXXXXXXXXXXXXXXXXXXX"
 
-token = 'MTA1NzU5NjU5ODk0OTAwNzM5MA.GpHxYB.wRjO35TtEsLAMM2sMALoEq0D90AMbmr-OWEwnM'
-bot = commands.Bot(command_prefix="/", intents=discord.Intents.all())
+def bot_play_text(bot, event):
+    if event.data["text"] == "/start":
+        bot.send_text(chat_id=event.from_chat, text="Привет! Я бот для игры в угадай число. Начнём?")
 
+def num_play(bot, event):
+    if event.data["text"] == ran_num:
+        bot.send_text(chat_id=event.from_chat, text="Прям в точку, чел харош")
+    elif event.data["text"] > ran_num:
+        bot.send_text(chat_id=event.from_chat, text="А вот нет число меньше.")
+    elif event.data["text"] < ran_num:
+        bot.send_text(chat_id=event.from_chat, text="да блин как ты не поймёшь число больше.")
 
-@bot.event
-async def on_message(message):
-    if message.channel.name == "арсений":
-        if message.author.bot:
-            return
-        elif {i.lower().translate(str.maketrans("", "", string.punctuation)) \
-              for i in message.content.split(' ')}\
-                .intersection(set(json.load(open('cenz.json')))) != set():
-            await message.delete()
-        else:
-            await message.channel.send("@everyone")
-
-
-
-@bot.command()
-async def start(m, *, a=None):
-    if m.channel.name == "арсений":
-        if a == 'info':
-            await m.send("Я бот Сем Неби, люблю бездельничать")
-        elif a == 'help':
-            await m.send("Команды легкие, ну типа /sps, /start info, /start starts, /igra 1-3, /hi /start creator, /start")
-        elif a == 'starts':
-            await m.send("Напиши что-то из этого !start info, !start help")
-        elif a is None:
-            await m.send("Нет аргумента, напиши !start help")
-        elif a == 'creator':
-            await m.send("Создатель - @мшкфреде#4413")
-
-@bot.command()
-async def igra(l, k=None):
-    if l.channel.name == "арсений":
-        if k == '1':
-            await l.send('Не угадал')
-        elif k == '2':
-            await l.send("+ ugadal")
-        elif k == '3':
-            await l.send('NET')
-        elif k is None:
-            await l.send('После !igra пиши число от 1 до 3')
-
-@bot.command()
-async def sps(k):
-    if k.channel.name == "арсений":
-        await k.send("Луис спс")
-
-@bot.command()
-async def hi(h):
-    if h.channel.name == "арсений":
-        await h.send('Привет ' + str(h.message.author))
-
-
-
-
-
+def bot_play(bot, event):
+    if event.data["callbackData"] == "call_btn_id_1":
+        bot.send_text(chat_id=event.from_chat, text="Я загадал число от 1 до 100, угадаешь молодец если нет то рано или позно всё равно сможешь найти число.")
+        bot.send_text(chat_id=event.from_chat, text="Ваше предположение?")
 
 bot.run(token)
